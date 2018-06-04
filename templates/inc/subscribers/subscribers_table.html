@@ -1,0 +1,37 @@
+<table id="id_subsTable" class="table table-bordered table-striped">
+  <thead>
+  <tr>
+    <th style="width: 20px">ID</th>
+    <th>Имя</th>
+    <th>Социальная сеть</th>
+    <th>Статус</th>
+    <th>Ссылка на профиль</th>
+    <th>Источник</th>
+  </tr>
+  </thead>
+  <tbody>
+  {% for sub in subs %}
+  <tr>
+    <td>{{ sub.id }}</td>
+    <td>{{ sub.get_full_name }}</td>
+    <td>{{ sub.get_network }}</td>
+    <td>{{ sub.get_status }}</td>
+    <td><a href="{{ sub.get_link_origin }}">{{ sub.get_link_origin }}</a></td>
+    <td>{{ sub.get_source }}</td>
+  </tr>
+  {% empty %}
+  <p>Подписчиков еще нет</p>
+  {% endfor %}
+  </tbody>
+  <tfoot>
+  <tr>
+    <th style="width: 20px">ID</th>
+    <th>Имя</th>
+    <th>Социальная сеть</th>
+    <th>Статус</th>
+    <th>Ссылка на профиль</th>
+    <th>Источник</th>
+  </tr>
+  </tfoot>
+</table>
+<div id="id_loadSpinner" class="overlay" style="display: none;"><i class="fa fa-spinner fa-spin"></i></div>

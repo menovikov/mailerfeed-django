@@ -1,0 +1,34 @@
+<div class="box-header">
+  <h3 class="box-title">Сообщения</h3>
+
+  <div class="box-tools">
+    <ul class="pagination pagination-sm no-margin pull-right">
+      <li><a href="#">&laquo;</a></li>
+      <li><a href="#">1</a></li>
+      <li><a href="#">2</a></li>
+      <li><a href="#">3</a></li>
+      <li><a href="#">&raquo;</a></li>
+    </ul>
+  </div>
+</div>
+<!-- /.box-header -->
+<div class="box-body no-padding">
+  <table class="table">
+    <tr>
+      <th style="width: 20px">ID</th>
+      <th>Получатель</th>
+      <th>Социальная сеть</th>
+      <th>Статус</th>
+      <th>Ссылка на профиль</th>
+    </tr>
+    {% for msg in msgs %}
+    <tr>
+      <td>{{ msg.id }}</td>
+      <td>{{ msg.recipient.get_full_name }}</td>
+      <td>{{ msg.recipient.get_network }}</td>
+      <td>{{ msg.get_status }}</td>
+      <td><a href="{{ msg.recipient.get_link_origin }}">{{ msg.recipient.get_link_origin }}</a></td>
+    </tr>
+    {% endfor %}
+  </table>
+</div>

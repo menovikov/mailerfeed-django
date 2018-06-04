@@ -1,0 +1,86 @@
+{% extends 'base.html' %}{% load staticfiles %}
+
+
+{% block content %}
+<!-- Content Header (Page header) -->
+    <section class="content-header">
+      <h1>
+        Рост базы
+        <!-- <small>Control panel</small> -->
+      </h1>
+      <ol class="breadcrumb">
+        <li><a href="#"><i class="fa fa-dashboard"></i> Home</a></li>
+        <li class="active">Рост базы</li>
+      </ol>
+    </section>
+
+    <!-- Main content -->
+    <section class="content">
+    <div class="row">
+      <div class="col-md-12">
+        <div class="box box-primary">
+          <div class="box-header">
+            <h3 class="box-title">Виджеты</h3>
+          </div>
+          <div class="box-body">
+            <div class="callout callout-info">
+              <h4>Немного о виджетах...</h4>
+              <p>С помощью виджетов вы получаете сигнал о новом подписчике. Установка виджета на своей странице позволяет отслеживать момент подписки и запускать цепочки сообщений</p>
+            </div>
+          </div>
+          <div class="box-body">
+            <h4>Выберите группу ВК</h4>
+            <select id="id_vk_widget_group" class="form-control" style="margin: 5px 0 5px 0;">
+              <option value="0" disabled selected></option>
+              {% for option in vk_groups %}
+              <option value="{{ option.id }}" data-activated="{% if option.access_token %}true{% else %}false{% endif %}">{{ option.title }}</option>
+              {% endfor %}
+            </select>
+            <p><span id="id_vk_group_triggers_count">0</span> активных цепочек для группы</p> 
+            <br>
+            <p class="widget-code" hidden>Код виджета</p>
+            <pre class="widget-code" style="font-weight: 600;" hidden><code id="id_vk_widget_code"></code></pre>
+            <button id="id_vk_widget_demo" class="btn btn-primary widget-demo" style="display: none;">Показать демо кнопки подписки</button>
+          </div>          
+        </div>
+      </div>
+    </div>
+  </section>
+  <!-- /.content -->
+{% endblock content %}
+{% block extra_js %}
+<script type="text/javascript">
+  $(document).ready(function(){
+    $('#id_vk_widget_group').on('change', function(){
+      $.ajax({
+        type: "POST",
+        url: "{% url 'get_vk_widget' %}",
+        data: { 'group_id': $('#id_vk_widget_group').val() },
+        beforeSend: function(xhr, settings) {
+          if (!csrfSafeMethod(settings.type) && !this.crossDomain) {
+              xhr.setRequestHeader("X-CSRFToken", csrftoken);
+          }
+        },
+        success: function(result){
+          $('#id_vk_widget_code').html(result.widget_code_safe);
+          $('.widget-code').show();
+          $('#id_vk_group_triggers_count').html(result.triggers_count)
+          $('.widget-demo').show();
+          $('#id_vk_widget_demo').off('click');
+          $('#id_vk_widget_demo').on('click', function(){
+            let w = 300, h = 200;
+            let left = (screen.width/2)-(w/2);
+            let top = (screen.height/2)-(h/2);
+            let demoWindow = window.open("", "Demo Window", 'toolbar=no, location=no, directories=no, status=no, menubar=no, scrollbars=no, resizable=no, copyhistory=no, width='+w+', height='+h+', top='+top+', left='+left);
+            demoWindow.document.write(result.widget_code);
+          })
+        },
+        error: function(error){
+          $('#id_vk_widget_code').html("");
+          $('#id_vk_group_triggers_count').html(0)
+        },
+      })
+    });
+  })
+</script>
+{% endblock extra_js %}

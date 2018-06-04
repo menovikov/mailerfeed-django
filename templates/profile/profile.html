@@ -1,0 +1,177 @@
+{% extends 'base.html' %}{% load staticfiles %}
+
+
+{% block content %}
+    <!-- Content Header (Page header) -->
+    <section class="content-header">
+      <h1>
+        Профиль
+      </h1>
+      <ol class="breadcrumb">
+        <li><a href="{% url request.resolver_match.url_name %}"><i class="active fa fa-dashboard"></i>Профиль</a></li>
+      </ol>
+    </section>
+
+    <!-- Main content -->
+    <section class="content">
+
+      <div class="row">
+        <div class="col-md-4">
+
+          <!-- Profile Image -->
+          <div class="box box-primary">
+            <div class="box-body box-profile">
+              <img class="profile-user-img img-responsive img-circle" src="{{ request.user.profile.get_photo_url }}" alt="User profile picture">
+
+              <h3 class="profile-username text-center">{{ request.user.profile.get_full_name }}</h3>
+              {% if request.user.profile.vk_is_connected %}<p class="text-muted text-center"><a href="https://vk.com/id{{ request.user.profile.vk_id }}">vk.com/id{{ request.user.profile.vk_id }}</a></p>{% endif %}
+              {% if request.user.profile.tg_is_connected %}<p class="text-muted text-center"><a href="https://web.telegram.org/#/im?p=u{{ request.user.profile.tg_id }}">web.telegram.org/#/im?p=u{{ request.user.profile.tg_id }}</a></p>{% endif %}
+              <p class="text-muted text-center">Тариф: Стандарт</p>
+
+              <ul class="list-group list-group-unbordered">
+                <li class="list-group-item">
+                  <b>Email</b> <a class="pull-right">{{ request.user.profile.email }}</a>
+                </li>
+                <li class="list-group-item">
+                  <b>Телефон</b> <a class="pull-right">{{ request.user.profile.get_phone_number }}</a>
+                </li>
+                <li class="list-group-item">
+                  <b>Дата регистрации</b> <a class="pull-right">{{ request.user.date_joined }}</a>
+                </li>
+                <li class="list-group-item">
+                  <b>Последний вход</b> <a class="pull-right">{{ request.user.last_login }}</a>
+                </li>
+              </ul>
+
+              <a href="#" class="btn btn-primary btn-block"><b>Follow</b></a>
+            </div>
+            <!-- /.box-body -->
+          </div>
+          <!-- /.box -->
+        </div>
+        <!-- /.col -->
+        <div class="col-md-8">
+          <div class="nav-tabs-custom">
+            <ul class="nav nav-tabs">
+              <li class="active"><a href="#settings" data-toggle="tab">Настройки</a></li>
+              <li class=""><a href="#api" data-toggle="tab">API</a></li>
+            </ul>
+            <div class="tab-content">
+              <div class="active tab-pane" id="settings">
+                <div id="id_calloutSave" class="callout" style="margin: 10px 0 10px 10px; display: none;"></div>
+                <form class="form-horizontal">
+                  <div class="form-group">
+                    <label for="inputName" class="col-sm-2 control-label">Имя</label>
+
+                    <div class="col-sm-10">
+                      <input type="text" class="form-control" id="inputName" placeholder="Имя">
+                    </div>
+                  </div>
+                  <div class="form-group">
+                    <label for="inputName" class="col-sm-2 control-label">Фамилия</label>
+
+                    <div class="col-sm-10">
+                      <input type="text" class="form-control" id="inputLastname" placeholder="Фамилия">
+                    </div>
+                  </div>
+                  <div class="form-group">
+                    <label for="inputEmail" class="col-sm-2 control-label">Email</label>
+
+                    <div class="col-sm-10">
+                      <input type="email" class="form-control" id="inputEmail" placeholder="Email">
+                    </div>
+                  </div>
+                  <div class="form-group">
+                    <label for="inputEmail" class="col-sm-2 control-label">Телефон</label>
+
+                    <div class="col-sm-10">
+                      <input type="text" class="form-control" id="inputPhone" placeholder="Телефон">
+                    </div>
+                  </div>
+                  <div class="form-group">
+                    <label for="inputExperience" class="col-sm-2 control-label">Пароль</label>
+                    <div class="col-sm-10">
+                     <input type="password" class="form-control" id="inputPass" placeholder="Пароль" disabled>
+                    </div>
+                  </div>
+                  <div class="form-group">
+                    <label for="inputExperience" class="col-sm-2 control-label">Повторите пароль</label>
+                    <div class="col-sm-10">
+                      <input type="password" class="form-control" id="inputPass2" placeholder="Повторите пароль" disabled>
+                    </div>
+                  </div>
+                  <div class="form-group">
+                    <div class="col-sm-offset-2 col-sm-10">
+                      <button id="id_saveProfile" class="btn btn-danger">Сохранить</button>
+                      <div id="id_saveSpinner" class="overlay" hidden>
+                        <i class="fa  fa-spinner fa-spin"></i>
+                      </div>
+                    </div>
+                  </div>
+                </form>
+              </div>
+              <!-- /.tab-pane -->
+              <div class="tab-pane" id="api">
+                <p>In development</p>
+              </div>
+              <!-- /.tab-pane -->
+            </div>
+            <!-- /.tab-content -->
+          </div>
+          <!-- /.nav-tabs-custom -->
+        </div>
+        <!-- /.col -->
+      </div>
+      <!-- /.row -->
+    </section>
+    <!-- /.content -->
+{% endblock content %}
+{% block extra_js %}
+<script type="text/javascript">
+  $('#id_saveProfile').click(function(e){
+      e.preventDefault();
+      var firstName = $('#inputName').val();
+      var lastName = $('#inputLastname').val();
+      var phone = $('#inputPhone').val();
+      var email = $('#inputEmail').val();
+      var pass = $('#inputPass').val();
+      var pass2 = $('#inputPass2').val();
+      $.ajax({
+        type: "POST",
+        url: "{% url 'profile' %}",
+        data: {
+          'first_name': firstName, 'last_name': lastName, 'email': email, 'pass': pass,
+          'pass2': pass2, 'phone': phone},
+        beforeSend: function(xhr, settings) {
+          if (!csrfSafeMethod(settings.type) && !this.crossDomain) {
+              xhr.setRequestHeader("X-CSRFToken", csrftoken);
+          }
+          $('#id_saveProfile').hide();
+          $('#id_saveSpinner').show();
+        },
+        success: function(result){
+          $('#id_saveSpinner').hide();
+          $('#id_saveProfile').show();
+          if (result.status === "ok"){
+            $("#id_calloutSave").removeClass().addClass('callout callout-success');
+          } else {
+            $("#id_calloutSave").removeClass().addClass('callout callout-warning');
+          }
+          $("#id_calloutSave").html('');
+          for (var i = result.msg.length - 1; i >= 0; i--) {
+            $("#id_calloutSave").html($("#id_calloutSave").html() + "<p>" + result.msg[i] + "</p>");
+          }
+          $('#id_calloutSave').show();
+          setTimeout(function() {
+            $('#id_calloutSave').hide('blind', {}, 500)
+          }, 5000);
+        },
+        error: function(error){ 
+          $('#id_saveProfile').show();
+          $('#id_saveSpinner').hide();
+          alert("error")
+        }
+      })
+      });
+</script>
+{% endblock extra_js %}

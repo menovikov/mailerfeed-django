@@ -1,0 +1,165 @@
+{% extends 'base.html' %}{% load staticfiles %}
+
+
+{% block content %}
+    <section class="content-header">
+      <h1>
+        Панель управления
+      </h1>
+      <ol class="breadcrumb">
+        <li><a href="#"><i class="fa fa-dashboard"></i> Home</a></li>
+        <li class="active">Социальные сети</li>
+      </ol>
+    </section>
+
+    <!-- Main content -->
+    <section class="content">
+    <div class="row">
+      <div class="col-md-8">
+        <div class="box box-primary">
+          <div class="box-header">
+            <h3 class="box-title">Подписчики</h3>
+            <div id="id_paginationBox" class="box-tools">
+              {% include 'inc/subscribers/pagination.html' %}
+            </div>
+          </div>
+          <!-- /.box-header -->
+          <div id="id_subsBoxBody" class="box-body">
+            <table id="id_subsTable" class="table table-bordered table-striped">
+              <thead>
+              <tr>
+                <th style="width: 20px">ID</th>
+                <th>Имя</th>
+                <th>Социальная сеть</th>
+                <th>Статус</th>
+                <th>Ссылка на профиль</th>
+                <th>Источник</th>
+              </tr>
+              </thead>
+              <tbody>
+              </tbody>
+              <tfoot>
+              <tr>
+                <th style="width: 20px">ID</th>
+                <th>Имя</th>
+                <th>Социальная сеть</th>
+                <th>Статус</th>
+                <th>Ссылка на профиль</th>
+                <th>Источник</th>
+              </tr>
+              </tfoot>
+            </table>
+            <div id="id_loadSpinner" class="overlay"><i class="fa fa-spinner fa-spin"></i></div>
+          </div>
+          <!-- /.box-body -->
+        </div>
+      </div>
+      <div class="col-md-4">
+        <div class="box box-primary">
+          <div class="box-header">
+            <h3 class="box-title">Фильтры</h3>
+          </div>
+          <!-- /.box-header -->
+          <div class="box-body pad table-responsive">
+            <table class="table text-center">
+              <tr>
+                <td>
+                  <input id="id_includeVK" class="subscribers-filter" type="checkbox" checked {% if not request.user.profile.vk_is_connected %}disabled{% endif %}>
+                  vk.com
+                </td>
+                <td>
+                  <input id="id_includeTG" class="subscribers-filter" type="checkbox" checked {% if not request.user.profile.tg_is_connected %}disabled{% endif %}>
+                  telegram
+                </td>
+              </tr>
+              <tr>
+                <td>
+                  <input id="id_includeActive" type="checkbox" class="subscribers-filter" checked>
+                  Active
+                </td>
+                <td>
+                  <input id="id_includeInactive" type="checkbox" class="subscribers-filter" checked>
+                  Inactive
+                </td>
+              </tr>
+              {% if vk_groups %}
+                <tr>
+                  <td>
+                    <b>Группы ВК</b>
+                  </td>
+                </tr>
+                {% for group in vk_groups %}
+                <tr style="text-align: left;">
+                  <td colspan="2">
+                    <input id="{{ group.id }}" type="checkbox" class="subscribers-filter vk-group" checked disabled>
+                    {{ group.title }}
+                  </td>
+                </tr>
+                {% endfor %}
+              {% endif %}
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+  <!-- /.content -->
+{% endblock content %}
+{% block extra_js %}
+<script type="text/javascript">
+  $(document).ready(function(){
+    function loadSubscribers(page){
+      let include_vk = false, include_tg = false,
+          include_active = false, include_inactive = false;
+      let vk_groups = [];
+      
+      if ($('#id_includeVK').is(':checked')){include_vk = true}
+      if ($('#id_includeTG').is(':checked')){include_tg = true}
+      if ($('#id_includeActive').is(':checked')) {include_active = true}
+      if ($('#id_includeInactive').is(':checked')) {include_inactive = true}
+      $('.vk-group').each(function(key, value){
+          if ($(value).is(':checked')) {
+              vk_groups.push($(value).attr('id')) 
+          }
+      })
+      $.ajax({
+        type: "POST",
+        url: "{% url 'subscribers' %}",
+        data: {
+          'include_vk': include_vk, 
+          'include_tg': include_tg,
+          'include_active': include_active,
+          'include_inactive': include_inactive,
+          'vk_groups': vk_groups,
+          'page': page},
+        beforeSend: function(xhr, settings) {
+          if (!csrfSafeMethod(settings.type) && !this.crossDomain) {
+              xhr.setRequestHeader("X-CSRFToken", csrftoken);
+          }
+          $('#id_subsTable > tbody').html('');
+          $('#id_loadSpinner').show();
+        },
+        success: function(result){
+          $('#id_subsBoxBody').html(result.subs_table);
+          $('#id_paginationBox').html(result.pagination);
+          $('#id_loadSpinner').hide();
+        },
+        error: function(error){ 
+          $('#id_subsBoxBody').html("error");
+          $('#id_loadSpinner').hide();
+        },
+      })
+    }
+
+  loadSubscribers();
+  $('.subscribers-filter').change(function(){
+    loadSubscribers();
+  });
+  $('#id_paginationBox').on('click', 'a', function(e){
+    e.preventDefault();
+    let page = $(this).data('val');
+    loadSubscribers(page);
+  })
+})
+</script>
+{% endblock extra_js %}

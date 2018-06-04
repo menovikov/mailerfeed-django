@@ -1,0 +1,57 @@
+{% extends "registration/registration_base.html" %}
+{% load i18n %}{% load crispy_forms_tags %}{% load staticfiles %}
+
+{% block title %}{% trans "Register for an account" %}{% endblock %}
+
+{% block content %}
+
+  <div class="single-col">
+    <a class="header-main main-logo" href="#"><img src="{% static 'mailerfeed_blue.png' %}"><span>mailerfeed</span></a>
+    <div class="single-col-text">{% trans 'Registered already?' %} <a href="{% url 'auth_login' %}">{% trans 'Sign in' %}</a></div>
+    <div class="single-col-form">
+      <form method="post" action="" class="reg-form">
+        {% csrf_token %}
+        {{ form|crispy }}
+        <div class="checkbox-wrap">
+          <label class="checkbox-label">
+            <input type="checkbox" name="agreement" id="id_agreement" class="checkbox-item"><span>{% trans 'I agree with' %} <a href="">{% trans 'terms of service' %}</a></span>
+          </label>
+        </div>
+        <div class="input-button-wrap"><input id="submitBtn" disabled="True" class="reg-btn" type="submit" value="{% trans 'Proceed' %}"></div>
+      </form>
+      
+    </div>
+  </div>
+
+
+
+
+<script type="text/javascript">
+$('#id_name').attr('placeholder', '{% trans "Name" %}*')
+$('#id_email').attr('placeholder', '{% trans "Login (Email)" %}*')
+$('#id_phone').attr('placeholder', '{% trans "Phone" %}*')
+$('#id_password').attr('placeholder', '{% trans "Password" %}*')
+$('#id_password2').attr('placeholder', '{% trans "Repeat password" %}*')
+$('#id_agreement').change(function() {
+    if(this.checked) {
+        $('#submitBtn').attr('disabled', false);
+    } else {
+    	$('#submitBtn').attr('disabled', true);
+    }
+});
+</script>
+{% endblock %}
+
+
+<!-- {% comment %}
+**registration/registration_form.html**
+Used to show the form users will fill out to register. By default, has
+the following context:
+
+``form``
+    The registration form. This will be an instance of some subclass
+    of ``django.forms.Form``; consult `Django's forms documentation
+    <http://docs.djangoproject.com/en/dev/topics/forms/>`_ for
+    information on how to display this in a template.
+{% endcomment %}
+ -->

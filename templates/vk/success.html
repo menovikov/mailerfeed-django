@@ -1,0 +1,17 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="col-md-6" style="padding-top: 50px; text-align: center">
+	{% if user_id %}
+	<h2>Welcome, {{ user_id }}</h2>
+	{% else %}
+	<h2>Almost there</h2>
+	{% endif %}
+</div>
+<script type="text/javascript">
+var loc = window.location.href;
+if (loc.indexOf("#") !== -1){
+	window.location = window.location.href.replace('#', '?');
+}
+</script>
+{% endblock content %}

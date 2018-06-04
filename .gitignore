@@ -1,0 +1,8 @@
+.idea/
+**.pyc
+**.log
+mailerfeed_social/settings_dev.py
+mailerfeed_social/settings_prod.py
+**/__pycache__
+**.sqlite3
+tgconnector/tgcredentials/

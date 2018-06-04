@@ -1,0 +1,2 @@
+<div id="vk_subscribe" data-client="{{ user_id }}-{{ group_id }}-{{ group_sid }}"></div>
+<script type="text/javascript" src="{{ script_path }}"></script>

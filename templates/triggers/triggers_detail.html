@@ -1,0 +1,347 @@
+{% extends 'base.html' %}{% load staticfiles %}
+
+
+{% block content %}
+<!-- Content Header (Page header) -->
+    <section class="content-header">
+      <h1>Цепочки</h1>
+      <ol class="breadcrumb">
+        <li class="active"><i class="fa fa-dashboard"></i> Цепочки</li>
+        <li class="active"> {{ trigger.title|default:"Новая цепочка" }}</li>
+      </ol>
+    </section>
+
+    <!-- Main content -->
+    <section class="content">
+    <div class="row">
+      <div class="col-md-8">
+        <div class="box box-primary">
+          <div id="id_callout" class="callout callout-warning" style="margin: 5px; display: none"></div>
+          <div class="box-header">
+            <h3 class="box-title">{{ trigger.title|default:"Новая цепочка" }}</h3>
+          </div>
+          <!-- /.box-header -->
+          <div class="box-body">
+            <form role="form">
+              <div class="box-body">
+                <div class="form-group">
+                  <label for="">Название</label>
+                  <input id="id_trigger_title" name="title" type="text" value="{{ trigger.title }}" class="form-control" id="" placeholder="Название">
+                </div>
+                <div class="form-group">
+                  <label>Канал</label>
+                  <select id="id_channel" name="start" class="form-control">
+                    {% for val, chan in channels %}
+                      <option value="{{ val }}" {% if trigger and trigger.channel == val %}selected{% endif %}>{{ chan }}</option>
+                    {% endfor %}
+                  </select>
+                </div>
+                <div id="id_vk_group_div" class="form-group" hidden>
+                  <label>Группа</label>
+                  <select id="id_vk_group" name="start" class="form-control">
+                    {% for option in vk_groups %}
+                    <option value="{{ option.id }}" {% if option.id == trigger.group.id %}selected{% endif %}>{{ option.title }}</option>
+                    {% endfor %}
+                  </select>
+                </div>
+
+                <div class="form-group">
+                  <label>Считать время от</label>
+                  <select id="id_trigger_start" name="start" class="form-control">
+                    {% for val, option in start_options %}
+                    <option value="{{ val }}" {% if trigger.time_from == val %}selected{% endif %}>{{ option }}</option>
+                    {% endfor %}
+                  </select>
+                </div>
+
+                <div id="id_mailings" class="form-group" style="display: none;">
+                  <label>Рассылка</label>
+                  <select id="id_mailings_select" class="form-control"></select>
+                </div>
+              </div>
+            </form>
+          </div>
+        </div>
+        <div class="box box-primary">
+          <div class="box-header">
+            <h3 class="box-title">Сообщения</h3>
+          </div>
+         <!-- The time line -->
+         <form id="id_triggerDetailsForm">
+          <ul id="id_triggersTimeLine" class="timeline">
+          
+          {% if trigger %}
+            {% for action in trigger.get_actions %}
+              <li class="time-label">
+                <span class="bg-white">
+                  <div class="input-group" style="width: unset;">
+                    {% with action.get_start_after as val %}
+                    <input class="form-control time-val" type="text" name="time_val" onkeypress='return event.charCode >= 48 && event.charCode <= 57' maxlength="4" value="{{ val.2 }}" style="width: 60px;{% if val.0 == action.IMMEDIATE %}display: none;{% endif %}">
+                    <select name='since' class="form-control select-curr" style="width: unset;">
+                      {% for i, j in units %}
+                      <option value="{{ i }}" {% if j == val.1 %}selected{% endif %}>{{ j }}</option>
+                      {% endfor %}
+                    </select>
+                    {% endwith %}
+                  </div>
+                </span>
+              </li>
+        
+              <li>
+                <i class="fa fa-envelope bg-blue"></i>
+                <div class="timeline-item">
+                  <h3 class="timeline-header"><input name="msg_name" type="text" class="form-control" id="" value="{{ action.title }}" placeholder="Название сообщения"></h3>
+                  <div class="timeline-body">
+                    <textarea name="msg_text" class="form-control" rows="2" placeholder="Текст сообщения">{{ action.text }}</textarea>
+                  </div>
+                  <div class="timeline-footer">
+                    <a class="btn btn-primary btn-xs add-msg">Добавить сообщение</a>
+                    <a class="btn btn-danger btn-xs delete-msg">Удалить</a>
+                  </div>
+                </div>
+              </li>     
+            {% endfor %}
+          {% else %}
+            <li class="time-label">
+              <span class="bg-white">
+                <div class="input-group" style="width: unset;">
+                  <input class="form-control time-val" type="text" name="time_val" onkeypress='return event.charCode >= 48 && event.charCode <= 57' maxlength="4" value="0" style="width: 60px; display: none;">
+                  <select name='since' class="form-control select-curr" style="width: unset;">
+                    {% for i, j in units %}
+                    <option value="{{ i }}" >{{ j }}</option>
+                    {% endfor %}
+                  </select>
+                </div>
+              </span>
+            </li>
+
+            <li>
+              <i class="fa fa-envelope bg-blue"></i>
+              <div class="timeline-item">
+                <h3 class="timeline-header"><input name="msg_name" type="text" class="form-control" id="" value="Название" placeholder="Название сообщения"></h3>
+                <div class="timeline-body">
+                  <textarea name="msg_text" class="form-control" rows="2" placeholder="Текст сообщения">Сообщение</textarea>
+                </div>
+                <div class="timeline-footer">
+                  <a class="btn btn-primary btn-xs add-msg">Добавить сообщение</a>
+                  <a class="btn btn-danger btn-xs delete-msg">Удалить</a>
+                </div>
+              </div>
+            </li>
+          {% endif %}
+
+          </ul>
+        </form>
+        </div>
+
+        <div class="box box-primary">
+          <div id="id_btnPanel" class="box-body">
+            {% if trigger %}
+              {% if trigger.status != trigger.STARTED %}
+              <a class="btn btn-app" href="{% url 'triggers_setstatus' trigger.id trigger.STARTED %}"><i class="fa fa-play"></i> Start</a>
+              {% else %}
+              <a class="btn btn-app" href="{% url 'triggers_setstatus' trigger.id trigger.STOPPED %}"><i class="fa fa-stop"></i> Stop</a>
+              {% endif %}
+            {% endif %}
+
+            <button id="id_triggerSaveBtn" class="btn btn-app">
+              <i class="fa fa-save"></i> Save
+            </button>
+            {% if trigger %}
+            <a class="btn btn-app" href="{% url 'triggers_delete' trigger.id %}"><i class="fa fa-remove"></i> Delete</a>
+            {% endif %}
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+  <!-- /.content -->
+{% endblock content %}
+{% block extra_js %}
+<script type="text/javascript">
+  function toggleMailings(){
+    if ($('#id_trigger_start').val() == 2){ $('#id_mailings').show(); loadMailings(); } 
+    else { $('#id_mailings').hide(); }
+  }
+  function setStartFrom(){
+    if ($('#id_channel').val() == 1) {
+
+      $('#id_vk_group_div').show();
+      $('#id_from_subscription').show();
+      loadMailings();
+
+    } else {
+      $('#id_mailings').show();
+        loadMailings();
+
+      // if ($('#id_channel').val() == 2) { 
+      //   $('#id_from_subscription').hide();
+      //   $('#id_trigger_start').val(2);
+      //   $('#id_mailings').show();
+      //   loadMailings();
+      // }
+
+      $('#id_vk_group_div').hide();
+    }
+  }
+  function loadMailings(){
+    $('#id_mailings_select').empty();  
+    let channel = $('#id_channel').val();
+    let vk_group_id = $('#id_vk_group').val();
+    let trigger_id = "{{ trigger.id }}" || null;
+    if (!channel || (channel === 1 && !vk_group_id)){
+      return
+    }
+    $.ajax({
+      type: "POST",
+      url: "{% url 'get_mailings' %}",
+      data: {
+        channel: channel,
+        vk_group_id: vk_group_id,
+        trigger_id: trigger_id,
+      },
+      beforeSend: function(xhr, settings) {
+        if (!csrfSafeMethod(settings.type) && !this.crossDomain) {
+            xhr.setRequestHeader("X-CSRFToken", csrftoken);
+        }
+      },
+      success: function(result){
+        if (result.mailings) {
+          $('#id_mailings_select').empty();
+          let active_id;
+          for (var i = 0; i < result.mailings.length; i++) {
+            let val = { value : result.mailings[i].id }
+            if (result.mailings[i].isActive == true){
+              active_id = result.mailings[i].id
+            }
+            $('<option/>', val ).text(result.mailings[i].title).appendTo('#id_mailings_select'); 
+          }
+          $('#id_mailings_select').val(active_id);
+        }              
+      },
+      error: function(error){ alert('error') },
+    })
+  }
+  $(document).ready(function(){
+    $('#id_triggersTimeLine').on('click', '.delete-msg', function(){
+      $(this).parent().parent().parent().prev().remove();
+      $(this).parent().parent().parent().remove();
+    });
+    $('#id_triggersTimeLine').on('change', '.select-curr', function(){
+      if ($(this).val() == 0){
+        $(this).prev().hide()
+      } else {
+        $(this).prev().show()
+      }
+    });
+    toggleMailings()
+    $('#id_trigger_start').on('change', function(){
+      toggleMailings();
+    })
+    $(".time-val").keydown(function (e) {
+        // Allow: backspace, delete, tab, escape, enter and .
+        if ($.inArray(e.keyCode, [46, 8, 9, 27, 13, 110, 190]) !== -1 ||
+             // Allow: Ctrl/cmd+A
+            (e.keyCode == 65 && (e.ctrlKey === true || e.metaKey === true)) ||
+             // Allow: Ctrl/cmd+C
+            (e.keyCode == 67 && (e.ctrlKey === true || e.metaKey === true)) ||
+             // Allow: Ctrl/cmd+X
+            (e.keyCode == 88 && (e.ctrlKey === true || e.metaKey === true)) ||
+             // Allow: home, end, left, right
+            (e.keyCode >= 35 && e.keyCode <= 39)) {
+                 // let it happen, don't do anything
+                 return;
+        }
+        // Ensure that it is a number and stop the keypress
+        if ((e.shiftKey || (e.keyCode < 48 || e.keyCode > 57)) && (e.keyCode < 96 || e.keyCode > 105)) {
+            e.preventDefault();
+        }
+    });
+
+
+    $('#id_triggersTimeLine').on('click', '.add-msg', function(){
+      $(this).parent().parent().parent().after(`
+          <li class="time-label">
+            <span class="bg-white">
+              <div class="input-group" style="width: unset;">
+                <input class="form-control time-val" type="text" name="time_val" onkeypress='return event.charCode >= 48 && event.charCode <= 57' maxlength="4" value="0" style="width: 60px; display: none;">
+                <select name='since' class="form-control select-curr" style="width: unset;">
+                  {% for i, j in units %}
+                  <option value="{{ i }}" >{{ j }}</option>
+                  {% endfor %}
+                </select>
+              </div>
+            </span>
+          </li>
+
+          <li>
+            <i class="fa fa-envelope bg-blue"></i>
+            <div class="timeline-item">
+              <h3 class="timeline-header"><input name="msg_name" type="text" class="form-control" id="" value="Название" placeholder="Название сообщения"></h3>
+              <div class="timeline-body">
+                <textarea name="msg_text" class="form-control" rows="2" placeholder="Текст сообщения">Сообщение</textarea>
+              </div>
+              <div class="timeline-footer">
+                <a class="btn btn-primary btn-xs add-msg">Добавить сообщение</a>
+                <a class="btn btn-danger btn-xs delete-msg">Удалить</a>
+              </div>
+            </div>
+          </li>`)
+    });
+
+    $('#id_btnPanel').on('click', '#id_triggerSaveBtn', function(){
+      let title = $('#id_trigger_title').val();
+      let start = $('#id_trigger_start').val();
+      let channel = $('#id_channel').val();
+      let vk_group = $('#id_vk_group').val();
+      let mailing_id = $('#id_mailings_select').val();
+      let items = $('#id_triggerDetailsForm').serializeArray();
+      let data = {
+        'items': {}, 'count': 0, 'title': title, 'start': start,
+        'channel': channel, 'vk_group': vk_group, 'mailing_id': mailing_id,
+      };
+      let counter = 0;
+      for (var i = 0; i < items.length; i+=4) {
+        data['items'][counter] = {
+          'start': items[i].value * items[i+1].value,
+          'msg_name': items[i+2].value,
+          'msg_text': items[i+3].value}
+        counter ++;
+      }
+      data['count'] = counter
+      let link = {% if trigger %}"{% url 'triggers_detail' trigger.id %}"{% else %}"{% url 'triggers_new' %}"{% endif %}
+      $.ajax({
+        type: "POST",
+        contentType: 'application/json; charset=utf-8',
+        url: link,
+        data: JSON.stringify(data),
+        dataType: 'text',
+        beforeSend: function(xhr, settings) {
+          if (!csrfSafeMethod(settings.type) && !this.crossDomain) {
+              xhr.setRequestHeader("X-CSRFToken", csrftoken);
+          }
+        },
+        success: function(result){
+          let data = JSON.parse(result)
+          if (data.status === 'ok'){
+            window.location = "{% url 'triggers' %}";  
+          } else {
+            $('#id_callout').html(data.msg_text);
+            $('#id_callout').show();
+          }
+                  
+        },
+        error: function(error){ 
+          window.location = "{% url 'triggers' %}";
+        },
+      })
+
+    })
+
+    setStartFrom();
+    $('#id_channel').on('change', function(){
+      setStartFrom();
+    })
+  })
+</script>
+{% endblock extra_js %}

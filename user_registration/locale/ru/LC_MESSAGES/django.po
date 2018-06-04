@@ -1,0 +1,437 @@
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+#
+# Andrew Grigorev <andrew@ei-grad.ru>, 2015.
+msgid ""
+msgstr ""
+"Project-Id-Version: \n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2017-10-06 16:00+0300\n"
+"PO-Revision-Date: 2015-09-09 00:39+0300\n"
+"Last-Translator: Andrew Grigorev <andrew@ei-grad.ru>\n"
+"Language-Team: Russian <>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Language: ru_RU\n"
+"Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n%"
+"10<=4 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
+"X-Generator: Lokalize 2.0\n"
+
+#: .\user_registration\admin.py:25
+msgid "Activate users"
+msgstr "Активировать учетные записи"
+
+#: .\user_registration\admin.py:46
+msgid "Re-send activation emails"
+msgstr "Выслать ключи активации заново"
+
+#: .\user_registration\forms.py:38
+msgid "E-mail"
+msgstr "E-mail"
+
+#: .\user_registration\forms.py:52 .\user_registration\forms.py:118
+msgid "Этот имейл уже используется"
+msgstr ""
+
+#: .\user_registration\forms.py:83
+msgid ""
+"This email address is already in use. Please supply a different email "
+"address."
+msgstr ""
+"Этот адрес электронной почты уже используется. Пожалуйста, введите другой "
+"адрес."
+
+#: .\user_registration\forms.py:91
+#, fuzzy
+#| msgid "The two password fields didn't match."
+msgid "Passwords do not match"
+msgstr "Введенные пароли не совпадают."
+
+#: .\user_registration\forms.py:101
+msgid "I have read and agree to the Terms of Service"
+msgstr "Я прочитал Правила Использования и согласен с ними"
+
+#: .\user_registration\forms.py:102
+msgid "You must agree to the terms to register"
+msgstr "Для регистрации Вы должны согласиться с Правилами"
+
+#: .\user_registration\forms.py:146
+msgid "егистрация с использованием свободных имейлов запрещена"
+msgstr ""
+
+#: .\user_registration\models.py:233
+msgid "user"
+msgstr "пользователь"
+
+#: .\user_registration\models.py:235
+msgid "activation key"
+msgstr "ключ активации"
+
+#: .\user_registration\models.py:241
+msgid "registration profile"
+msgstr "карточка регистрации"
+
+#: .\user_registration\models.py:242
+msgid "registration profiles"
+msgstr "карточки регистрации"
+
+#~ msgid "Account activation failed."
+#~ msgstr "Активация аккаунта не удалась."
+
+#~ msgid "Account Activated"
+#~ msgstr "Учетная запись активирована"
+
+#~ msgid "Your account is now activated."
+#~ msgstr "Ваша учетная запись теперь активирована."
+
+#~ msgid "registration"
+#~ msgstr "регистрация"
+
+#~ msgid ""
+#~ "\n"
+#~ "You (or someone pretending to be you) have asked to register an account "
+#~ "at\n"
+#~ "%(site_name)s.  If this wasn't you, please ignore this email\n"
+#~ "and your address will be removed from our records.\n"
+#~ msgstr ""
+#~ "\n"
+#~ "Вы (или кто-то выдающий себя за вас) оставил заявку на регистрацию\n"
+#~ "учетной записи на %(site_name)s. Если это были не вы, то проигнорируйте\n"
+#~ "это сообщение, и ваш почтовый адрес будет удален из наших записей.\n"
+
+#~ msgid ""
+#~ "\n"
+#~ "To activate this account, please click the following link within the "
+#~ "next\n"
+#~ "%(expiration_days)s days:\n"
+#~ msgstr ""
+#~ "\n"
+#~ "Чтобы активировать эту учетную запись, перейдите по следующей ссылке\n"
+#~ "в течении %(expiration_days)s дней:\n"
+
+#~ msgid ""
+#~ "\n"
+#~ "Sincerely,\n"
+#~ "%(site_name)s Management\n"
+#~ msgstr ""
+#~ "\n"
+#~ "С уважением,\n"
+#~ "Команда %(site_name)s\n"
+
+#~ msgid "Account activation on"
+#~ msgstr "Активация учетной записи на"
+
+#, fuzzy
+#~| msgid "Account activation failed."
+#~ msgid "Account Approval failed."
+#~ msgstr "Активация аккаунта не удалась."
+
+#, fuzzy
+#~| msgid "Account Activated"
+#~ msgid "Account Approved"
+#~ msgstr "Учетная запись активирована"
+
+#, fuzzy
+#~| msgid "Your account is now activated."
+#~ msgid "The user's account is now approved."
+#~ msgstr "Ваша учетная запись теперь активирована."
+
+#, fuzzy
+#~| msgid "Your account is now activated."
+#~ msgid ""
+#~ "\n"
+#~ "    Your account is now approved. You can \n"
+#~ "    "
+#~ msgstr "Ваша учетная запись теперь активирована."
+
+#, fuzzy
+#~| msgid "log in"
+#~ msgid "log in."
+#~ msgstr "войти"
+
+#~ msgid ""
+#~ "\n"
+#~ "    Sincerely,\n"
+#~ "    %(site_name)s Management\n"
+#~ "    "
+#~ msgstr ""
+#~ "\n"
+#~ "    С уважением,<br>\n"
+#~ "    Команда %(site_name)s\n"
+#~ "    "
+
+#, fuzzy
+#~| msgid ""
+#~| "\n"
+#~| "To activate this account, please click the following link within the "
+#~| "next\n"
+#~| "%(expiration_days)s days:\n"
+#~ msgid ""
+#~ "\n"
+#~ "To approve this, please click the following link.\n"
+#~ msgstr ""
+#~ "\n"
+#~ "Чтобы активировать эту учетную запись, перейдите по следующей ссылке\n"
+#~ "в течении %(expiration_days)s дней:\n"
+
+#, fuzzy
+#~| msgid "Account activation on"
+#~ msgid "Account approval on"
+#~ msgstr "Активация учетной записи на"
+
+#~ msgid "Log in"
+#~ msgstr "Войти"
+
+#~ msgid "Not a user yet?"
+#~ msgstr "Еще нет учетной записи?"
+
+#~ msgid "Sign up"
+#~ msgstr "Зарегистрироваться"
+
+#~ msgid "Forgot password?"
+#~ msgstr "Забыли пароль?"
+
+#~ msgid "Recover"
+#~ msgstr "Восстановить пароль"
+
+#~ msgid "Login"
+#~ msgstr "Войти"
+
+#~ msgid "Login (Email)"
+#~ msgstr "Логин (email)"
+
+#, fuzzy
+#~| msgid "Password reset"
+#~ msgid "Password"
+#~ msgstr "Сброс пароля"
+
+#~ msgid "Logged out"
+#~ msgstr "Выход"
+
+#~ msgid "Successfully logged out"
+#~ msgstr "Вы успешно вышли из своей учетной записи"
+
+#~ msgid "Password changed"
+#~ msgstr "Пароль изменен"
+
+#~ msgid "Password successfully changed!"
+#~ msgstr "Пароль успешно изменен!"
+
+#~ msgid "Change password"
+#~ msgstr "Изменить пароль"
+
+#~ msgid "Password reset complete"
+#~ msgstr "Сброс пароля завершен"
+
+#~ msgid "Your password has been reset!"
+#~ msgstr "Ваш пароль был сброшен!"
+
+#~ msgid "Confirm password reset"
+#~ msgstr "Подтверждение сброса пароля"
+
+#~ msgid "Enter your new password below to reset your password:"
+#~ msgstr "Введите ваш новый пароль:"
+
+#~ msgid "Set password"
+#~ msgstr "Установить пароль"
+
+#~ msgid "Password reset"
+#~ msgstr "Сброс пароля"
+
+#~ msgid "Greetings"
+#~ msgstr "Привет"
+
+#, fuzzy
+#~| msgid ""
+#~| "\n"
+#~| "You are receiving this email because you (or someone pretending to be "
+#~| "you)\n"
+#~| "requested that your password be reset on the %(domain)s site.  If you do "
+#~| "not \n"
+#~| "wish to reset your password, please ignore this message.\n"
+#~ msgid ""
+#~ "\n"
+#~ "You are receiving this email because you (or someone pretending to be "
+#~ "you)\n"
+#~ "requested that your password be reset on the %(domain)s site. If you do "
+#~ "not\n"
+#~ "wish to reset your password, please ignore this message.\n"
+#~ msgstr ""
+#~ "\n"
+#~ "Вы получили это письмо потому что вы (или кто-то выдающий себя за вас)\n"
+#~ "запросил сброс пароля на сайте %(domain)s. Если это были не вы, то "
+#~ "просто\n"
+#~ "проигнорируйте это сообщение.\n"
+
+#~ msgid ""
+#~ "\n"
+#~ "To reset your password, please click the following link, or copy and "
+#~ "paste it\n"
+#~ "into your web browser:\n"
+#~ msgstr ""
+#~ "\n"
+#~ "Чтобы сбросить пароль, перейдите по следующей ссылке:\n"
+
+#~ msgid "Your username, in case you've forgotten:"
+#~ msgstr "Ваше имя пользователя, на случай если вы его забыли:"
+
+#~ msgid "Best regards"
+#~ msgstr "С уважением,"
+
+#~ msgid "Management"
+#~ msgstr " "
+
+#~ msgid "Reset password"
+#~ msgstr "Сбросить пароль"
+
+#~ msgid "Registration is closed"
+#~ msgstr "Регистрация закрыта"
+
+#~ msgid "Sorry, but registration is closed at this moment. Come back later."
+#~ msgstr "Извините, но регистрация в данный момент закрыта. Попробуйте позже."
+
+#~ msgid "Activation email sent"
+#~ msgstr "Письмо активации отправлено"
+
+#~ msgid "Main page"
+#~ msgstr "Главная страница"
+
+#~ msgid "Register for an account"
+#~ msgstr "Регистрация учетной записи"
+
+#~ msgid "Registered already?"
+#~ msgstr "Уже зарегистрированы?"
+
+#~ msgid "Sign in"
+#~ msgstr "Войти"
+
+#~ msgid "I agree with"
+#~ msgstr "Я согласен с"
+
+#~ msgid "terms of service"
+#~ msgstr "политикой конфиденциальности"
+
+#~ msgid "Proceed"
+#~ msgstr "Продолжить"
+
+#~ msgid "Name"
+#~ msgstr "Имя"
+
+#~ msgid "Phone"
+#~ msgstr "Телефон"
+
+#~ msgid "Repeat password"
+#~ msgstr "Сбросить пароль"
+
+#, fuzzy
+#~| msgid "Account activation on"
+#~ msgid "Account Activation Resent"
+#~ msgstr "Активация учетной записи на"
+
+#~ msgid "Resend Activation Email"
+#~ msgstr "Выслать ключи активации заново"
+
+#~ msgid "Submit"
+#~ msgstr "Отправить"
+
+#~ msgid ""
+#~ "\n"
+#~ "    We have sent you an email with a link to reset your password. Please "
+#~ "check\n"
+#~ "    your email and click the link to continue.\n"
+#~ "    "
+#~ msgstr ""
+#~ "\n"
+#~ "    Вам было отправлено письмо со ссылкой на сброс пароля. Проверьте\n"
+#~ "    вашу почту и перейдите по указанной ссылке для продолжения.\n"
+#~ "    "
+
+#~ msgid ""
+#~ "\n"
+#~ "    Forgot your password? Enter your email in the form below and we'll "
+#~ "send you instructions for creating a new one.\n"
+#~ "    "
+#~ msgstr ""
+#~ "\n"
+#~ "    Забыли свой пароль? Введите свой адрес электронной почты и мы "
+#~ "отправим вам инструкции по установке нового пароля.\n"
+#~ "    "
+
+#~ msgid ""
+#~ "\n"
+#~ "Thanks for registration!\n"
+#~ msgstr ""
+#~ "\n"
+#~ "Спасибо за регистрацию!\n"
+
+#~ msgid ""
+#~ "\n"
+#~ "We've sent a confirmation email to your mailbox.\n"
+#~ msgstr ""
+#~ "\n"
+#~ "Мы выслали письмо подтверждения регистрации на вашу почту.\n"
+
+#~ msgid ""
+#~ "\n"
+#~ "Please, follow the link in the email to complete regostration.\n"
+#~ msgstr ""
+#~ "\n"
+#~ "Пожалуйста, перейдите по ссылке в этом письме.\n"
+
+#~ msgid ""
+#~ "Registration using free email addresses is prohibited. Please supply a "
+#~ "different email address."
+#~ msgstr ""
+#~ "Регистрация с использованием свободных почтовых серверов запрещена. "
+#~ "Пожалуйста, введите другой адрес электронной почты."
+
+#~ msgid "You can log in."
+#~ msgstr "Вы можете войти."
+
+#~ msgid ""
+#~ "\n"
+#~ "    You (or someone pretending to be you) have asked to register an "
+#~ "account at\n"
+#~ "    %(site_name)s.  If this wasn't you, please ignore this email\n"
+#~ "    and your address will be removed from our records.\n"
+#~ "    "
+#~ msgstr ""
+#~ "\n"
+#~ "  Вы (или кто-то выдающий себя за вас) оставил заявку на регистрацию\n"
+#~ "  учетной записи на %(site_name)s. Если это были не вы, то проигнорируйте "
+#~ "это сообщение, и ваш почтовый адрес будет удален из наших записей.\n"
+#~ "  "
+
+#~ msgid ""
+#~ "\n"
+#~ "    To activate this account, please click the following link within the "
+#~ "next\n"
+#~ "    %(expiration_days)s days:\n"
+#~ "    "
+#~ msgstr ""
+#~ "\n"
+#~ "    Чтобы активировать эту учетную запись, перейдите по следующей ссылке "
+#~ "в течении %(expiration_days)s дней:\n"
+#~ "    "
+
+#~ msgid "Reset it"
+#~ msgstr "Сбросьте его"
+
+#~ msgid "Register"
+#~ msgstr "Зарегистрироваться"
+
+#~ msgid "You may now"
+#~ msgstr "Вы можете теперь"
+
+#~ msgid "Username"
+#~ msgstr "Имя пользователя"
+
+#~ msgid "This value must contain only letters, numbers and underscores."
+#~ msgstr "Это поле может содержать только буквы, цифры и подчеркивания"
+
+#~ msgid "Email address"
+#~ msgstr "Адрес электронной почты"
+
+#~ msgid "A user with that username already exists."
+#~ msgstr "Пользователь с таким именем уже существует."

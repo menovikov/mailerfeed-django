@@ -1,0 +1,372 @@
+{% extends 'base.html' %}{% load staticfiles %}
+
+
+{% block content %}
+<!-- Content Header (Page header) -->
+  <section class="content-header">
+    <h1>
+      Рассылки
+    </h1>
+    <ol class="breadcrumb">
+      <li><a href="#"><i class="fa fa-dashboard"></i> Home</a></li>
+      <li class="active">Социальные сети</li>
+    </ol>
+  </section>
+
+    <!-- Main content -->
+  <section class="content">
+    <div class="row">
+      <div class="col-md-6">
+        <div class="box box-primary">
+            <div class="box-header with-border">
+              <h3 class="box-title">Новая рассылка</h3>
+            </div>
+            <div class="callout callout-success" style="margin: 10px; display: none">
+                <p>Отправка рассылки начата</p>
+            </div>
+            <!-- /.box-header -->
+            <div class="box-body">
+              <div class="form-group">
+                  <div class="checkbox">
+                    <label>
+                      <input id="id_vkEnable" type="checkbox" {% if not request.user.profile.vk_is_connected %}disabled{% endif %}>
+                      vk.com
+                      <div class="callout callout-warning" style="margin: 5px 0 5px 0; display: none;"></div>
+                      <div id="id_vkSelectGroupForm" class="form-group" style="display: none; margin-top: 15px;">
+                        <select id="id_vkSelectGroup" class="form-control" style="margin: 5px 0 5px 0;">
+                        {% for option in vk_groups %}
+                          <option value="{{ option.id }}" data-activated="{% if option.access_token %}true{% else %}false{% endif %}">{{ option.title }}</option>
+                        {% endfor %}
+                        </select>
+
+                        <p id="id_vkSubsCount" class="help-block" style="display: none;"><span id="id_vkSubsCountInt">0</span> подписчиков
+                          <a id="id_vkImport" href="#" class="btn btn-default" style="margin-left: 30px" disabled><i class="fa fa-pencil"></i> Импорт</a>
+                        </p>
+                      </div>
+                    </label>
+
+                  </div>
+
+                  <div class="checkbox">
+                    <label>
+                      <input id="id_tgEnable" type="checkbox" {% if not request.user.profile.tg_is_connected %}disabled{% endif %}>
+                      telegram
+                      <div id="id_tgSelectDiv" class="form-group" style="margin-top: 15px; display: none;" >
+                        Для выделения нескольких подписчиков удерживайте CTRL при нажатии
+                        <select id="id_tgSelectSub" class="form-control" style="margin: 5px 0 5px 0;" multiple></select>
+                        <p id="id_tgSubsCount" class="help-block"><span id="id_tgSubsCountInt">0</span> подписчиков</p>
+                      </div>
+                    </label>
+                  </div>
+              </div>
+              <div class="form-group">
+                <input class="form-control" id="mailing_title" type="text" placeholder="Название рассылки" disabled>
+              </div>
+              <div class="form-group">
+                <textarea id="compose-textarea" class="form-control" style="height: 300px" placeholder="Текст рассылки" disabled></textarea>
+              </div>
+              <div class="form-group">
+                <div class="btn btn-default btn-file">
+                  <i class="fa fa-paperclip"></i> Attachment
+                  <input type="file" name="attachment" disabled>
+                </div>
+                <p class="help-block">Max. 32MB</p>
+              </div>
+            </div>
+            <!-- /.box-body -->
+            <div class="box-footer">
+              <div class="pull-right">
+                <span id="id_totalSubsCount">Всего получателей: <span id="id_totalSubsCountInt">0</span>  </span>
+                <button id="id_Draft" type="button" class="btn btn-default" disabled><i class="fa fa-pencil"></i> Черновик</button>
+                <button id="id_Send" type="submit" class="btn btn-primary" disabled><i class="fa fa-envelope-o"></i> Отправить</button>
+              </div>
+            </div>
+            <!-- /.box-footer -->
+            <div id="id_sendSpinner" class="overlay" hidden>
+              <i class="fa  fa-spinner fa-spin"></i>
+            </div>
+          </div>
+          <!-- /. box -->
+    </div>
+    
+    <div class="col-md-6">
+      <div class="box box-primary">
+        <div class="box-header">
+          <h3 class="box-title">Статистика по рассылкам</h3>
+        </div>
+        <!-- /.box-header -->
+        <div class="box-body no-padding">
+          <table class="table">
+            <tr>
+              <td>Сообщений всего</td>
+              <td><span class="badge bg-red">{{ messages_count }}</span></td>
+            </tr>
+            <tr>
+              <td>Сообщений отправлено</td>
+              <td><span class="badge bg-red">{{ messages_count }}</span></td>
+            </tr>
+            <tr>
+              <td>Сообщений доставлено</td>
+              <td><span class="badge bg-red">?</span></td>
+            </tr>
+
+            <tr>
+              <td>Рассылок</td>
+              <td><span class="badge bg-red">{{ mailings_count }}</span></td>
+            </tr>
+            <tr>
+              <td>Активных подписчиков (отправка разрешена)</td>
+              <td><span class="badge bg-red">{{ subs_active_count }}</span></td>
+            </tr>
+            <tr>
+              <td>Подписчиков всего</td>
+              <td><span class="badge bg-red">{{ subs_total_count }}</span></td>
+            </tr>
+            <tr>
+              <td>Переходов</td>
+              <td><span class="badge bg-red">0</span></td>
+            </tr>
+          </table>
+        </div>
+        <!-- /.box-body -->
+
+      </div>
+      <!-- /.box -->
+      <div class="box box-primary">
+          <div class="box-header">
+            <h3 class="box-title">Рассылки</h3>
+          </div>
+          <!-- /.box-header -->
+          <div class="box-body">
+            <table id="example1" class="table table-bordered table-striped">
+              <thead>
+              <tr>
+                <th style="width: 20px">ID</th>
+                <th>Дата отправки</th>
+                <th>Социальная сеть</th>
+                <th>Статус</th>
+                <th>Кол-во</th>
+              </tr>
+              </thead>
+              <tbody>
+              {% for mailing in mailings %}
+              <tr>
+                <td>{{ mailing.id }}</td>
+                <td><a href="{% url 'mailings_detail' mailing.id %}">{{ mailing.title }}</a></td>
+                <td>{{ mailing.get_networks }}</td>
+                <td>{{ mailing.get_status }}</td>
+                <td>{{ mailing.get_msgs_count }}</td>
+              </tr>
+              {% empty %}
+              <p>Отправьте свою первую рассылку</p>
+              {% endfor %}
+              </tbody>
+              <tfoot>
+              <tr>
+                <th style="width: 20px">ID</th>
+                <th>Дата отправки</th>
+                <th>Социальная сеть</th>
+                <th>Статус</th>
+                <th>Кол-во</th>
+              </tr>
+              </tfoot>
+            </table>
+          </div>
+          <!-- /.box-body -->
+        </div>
+      </div>
+    </div>
+  </section>
+  <!-- /.content -->
+{% endblock content %}
+{% block extra_js %}
+<script type="text/javascript">
+  function clearInput() {
+    $('#id_vkEnable').attr('checked', false);
+    $('#id_tgEnable').attr('checked', false);
+    $('#compose-textarea').val('');
+    $('#mailing_title').val('');
+  }
+  function calculateTotalSubs(){
+    var vk = parseInt($('#id_vkSubsCountInt').html(), 0);
+    var tg = parseInt($('#id_tgSubsCountInt').html(), 0);
+    var total = vk + tg
+    $('#id_totalSubsCountInt').html(vk + tg);
+    if (total > 0) {
+      $('#compose-textarea').attr("disabled", false);
+      $('#mailing_title').attr("disabled", false);
+    } else {
+      $('#compose-textarea').attr("disabled", true);
+      $('#mailing_title').attr("disabled", true);
+    }
+  }
+  function getVKSubsCount() {
+    var group_id = $('#id_vkSelectGroup').val();
+    $.ajax({
+      type: "POST",
+      url: "{% url 'get_vk_active_subscribers' %}",
+      data: {'social_network': 1, 'group_id': group_id},
+      beforeSend: function(xhr, settings) {
+        if (!csrfSafeMethod(settings.type) && !this.crossDomain) {
+            xhr.setRequestHeader("X-CSRFToken", csrftoken);
+        }
+      },
+      success: function(result){
+        $('#id_vkSubsCountInt').html(result.count);
+        $('#id_vkImport').attr('href', result.link);
+        calculateTotalSubs();
+        if (result.error_msg) {
+          $('.callout-warning').html(result.error_msg);
+          $('.callout-warning').show();
+        }
+        $('#id_vkImport').attr("disabled", false);
+      },
+      error: function(error){ alert("error") }
+    })
+  }
+  function getTGSubsCount(){
+    var count = $('#id_tgSelectSub').val().length;
+    if (count){
+      $('#id_tgSubsCountInt').html(count);
+      calculateTotalSubs();
+    } else {
+      $('#id_tgSubsCountInt').html("0");
+    }
+  }
+  function getTGSubs() {
+    $.ajax({
+      type: "POST",
+      url: "{% url 'get_tg_subs' %}",
+      data: {'social_network': 2},
+      beforeSend: function(xhr, settings) {
+        if (!csrfSafeMethod(settings.type) && !this.crossDomain) {
+            xhr.setRequestHeader("X-CSRFToken", csrftoken);
+        }
+      },
+      success: function(result){
+        if (result.items.length > 0) {
+          for (var i = 0; i < result.items.length; i++) {
+            $('<option/>', { value : result.items[i].id }).text(result.items[i].name).appendTo('#id_tgSelectSub');
+            console.log(result.items[i])            
+          }
+        } else {
+          alert("No subscribers")
+        }
+      },
+      error: function(error){}
+    })
+  }
+  $(document).ready(function() {
+    $('#id_vkEnable').on('change', function() {
+        if(this.checked) {
+          $('#id_vkSelectGroupForm').show();
+          $('#id_vkSubsCount').show();
+        } else {
+          $('#id_vkSubsCountInt').html(0)
+          $('#id_vkSelectGroupForm').hide();
+          $('#id_vkSubsCount').hide();
+          $('.callout-warning').hide();
+        }
+        calculateTotalSubs();
+    });
+    $('#id_tgEnable').on('change', function() {
+      if(this.checked) {
+        $('#id_tgSelectDiv').show();
+        getTGSubs();
+      } else {
+        $("#id_tgSelectSub option").remove();
+        getTGSubsCount();
+        $("#id_tgSubsCountInt").html(0)
+        $('#id_tgSelectDiv').hide();
+      }
+      calculateTotalSubs();
+    });
+    $('#id_vkSelectGroup').change(function() {
+      $('.callout-warning').hide();
+      getVKSubsCount();
+      calculateTotalSubs();
+    });
+    $('#id_tgSelectSub').change(function() {
+      getTGSubsCount();
+      calculateTotalSubs();
+    });
+    $("#compose-textarea").on('change keyup paste', function() {
+      if ($("#compose-textarea").val().length > 0) {
+        $('#id_Send').attr("disabled", false);
+        $('#id_Draft').attr("disabled", false);
+      } else {
+        $('#id_Send').attr("disabled", true);
+        $('#id_Draft').attr("disabled", true);
+      }
+    });
+    $('#id_Send').click(function(){
+      var vk_group_id = $('#id_vkSelectGroup').val();
+      var tgSubs = $('#id_tgSelectSub').val();
+      var msg_title = $('#mailing_title').val();
+      var msg_text = $("#compose-textarea").val();
+      if (msg_text){
+        $.ajax({
+          type: "POST",
+          url: "{% url 'send_mailing' %}",
+          data: {
+            'msg_title': msg_title,
+            'msg_text': msg_text,
+            'vk_group_id': vk_group_id,
+            'tg_subs': tgSubs},
+          beforeSend: function(xhr, settings) {
+            if (!csrfSafeMethod(settings.type) && !this.crossDomain) {
+                xhr.setRequestHeader("X-CSRFToken", csrftoken);
+            }
+            $('#id_sendSpinner').show();
+          },
+          success: function(result){
+            $('#id_sendSpinner').hide();
+            $('.callout-success').show();
+            clearInput();
+            setTimeout(function() {
+              $('.callout-success').hide('blind', {}, 500);
+              window.location.reload();
+            }, 5000);
+          },
+          error: function(error){ 
+            $('#id_sendSpinner').hide();
+            alert("Error")
+          }
+        })
+      }
+    });
+    
+    $('#id_Draft').click(function(){
+      var vk_group_id = $('#id_vkSelectGroup').val();
+      var tgSubs = $('#id_tgSelectSub').val()
+      var msg_text = $("#compose-textarea").val();
+      if (msg_text){
+        $.ajax({
+          type: "POST",
+          url: "{% url 'save_draft_mailing' %}",
+          data: {
+            'msg_text': msg_text,
+            'vk_group_id': vk_group_id,
+            'tg_subs': tgSubs},
+          beforeSend: function(xhr, settings) {
+            if (!csrfSafeMethod(settings.type) && !this.crossDomain) {
+                xhr.setRequestHeader("X-CSRFToken", csrftoken);
+            }
+            $('#id_sendSpinner').show();
+          },
+          success: function(result){
+            $('#id_sendSpinner').hide();
+            clearInput();
+            window.location.reload();
+          },
+          error: function(error){ 
+            $('#id_sendSpinner').hide();
+            alert("Error");
+          }
+        })
+      }
+    });
+  });
+
+</script>
+{% endblock extra_js %}

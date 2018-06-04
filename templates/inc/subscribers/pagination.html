@@ -1,0 +1,7 @@
+<ul class="pagination pagination-sm no-margin pull-right">
+	<li><a class="pagination-btn" data-val="1" href="#">&laquo;</a></li>
+	{% if page1 %}<li><a class="pagination-btn" data-val="{{ page1 }}" href="#">{{ page1 }}</a></li>{% endif %}
+	{% if page2 %}<li><a class="pagination-btn" data-val="{{ page2 }}" href="#">{{ page2 }}</a></li>{% endif %}
+	{% if page3 %}<li><a class="pagination-btn" data-val="{{ page3 }}" href="#">{{ page3 }}</a></li>{% endif %}
+	<li><a class="pagination-btn" data-val="-1" href="#">&raquo;</a></li>
+</ul>

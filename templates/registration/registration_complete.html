@@ -1,0 +1,32 @@
+{% extends "registration/registration_base.html" %}
+{% load i18n %}{% load staticfiles %}
+
+{% block title %}{% trans "Activation email sent" %}{% endblock %}
+
+{% block content %}
+
+  <div class="single-col">
+    <a class="header-main main-logo" href="#"><img src="{% static 'mailerfeed_blue.png' %}"><span>mailerfeed</span></a>
+    <div class="single-col-text  single-col-text_big">
+    Спасибо за регистрацию! <br>
+    Мы выслали письмо подтверждения регистрации на вашу почту. <br>
+    Пожалуйста, перейдите по ссылке в этом письме.
+
+    </div>
+        <div class="input-button-wrap">
+         <a href="/" class="reg-btn">{% trans 'Main page' %}</a>
+        </div>
+
+  </div>
+
+{% endblock %}
+
+
+{% comment %}
+**registration/registration_complete.html**
+
+Used after successful completion of the registration form. This
+template has no context variables of its own, and should simply inform
+the user that an email containing account-activation information has
+been sent.
+{% endcomment %}

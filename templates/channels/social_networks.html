@@ -1,0 +1,279 @@
+{% extends 'base.html' %}{% load staticfiles %}
+
+
+{% block content %}
+    <!-- Content Header (Page header) -->
+    <section class="content-header">
+      <h1>
+        Панель управления
+        <!-- <small>Control panel</small> -->
+      </h1>
+      <ol class="breadcrumb">
+        <li><a href="#"><i class="fa fa-dashboard"></i> Home</a></li>
+        <li class="active">Социальные сети</li>
+      </ol>
+    </section>
+
+    <!-- Main content -->
+    <section class="content">
+      <div class="row">
+        <div class="col-md-6">
+          <div class="box box-primary">
+            <div class="box-header">
+              <i class="fa fa-vk"></i>
+              <h3 class="box-title">vk.com</h3>
+            </div>
+            <div class="box-body pad table-responsive">
+              <table class="table text-center">
+                <tr>
+                  {% if request.user.profile.vk_is_connected %}
+                  <td>
+                    <span class="fa fa-check-square-o"></span> Group/page-to-user<br>
+                    <a href="https://vk.com/id{{ request.user.profile.vk_id }}">vk.com/id{{ request.user.profile.vk_id }}</a>
+                  </td>
+                  <td>
+                    <a class="btn btn-block btn-success btn-md" href="{% url 'vk_user_auth' %}">Обновить</a>
+                  </td>
+                  <td>
+                    <a class="btn btn-block btn-danger btn-md" href="{% url 'vk_logout' %}">Отключиться</a>
+                  </td>
+                  {% else %}
+                  <td>
+                    Group/page-to-user
+                  </td>
+                  <td>
+                    <a class="btn btn-block btn-default btn-md" href="" disabled>Обновить</a>
+                  </td>
+                  <td>
+                    <a class="btn btn-block btn-primary btn-md" href="{% url 'vk_user_auth' %}">Подключить</a>
+                  </td>
+                  {% endif %}
+                </tr>
+                <tr>
+                  <td>User-to-user</td>
+                  <td>
+                    <button type="button" class="btn btn-block btn-default" disabled>Недоступно</button>
+                  </td>
+                  <td>
+                    <button type="button" class="btn btn-block btn-default" disabled>Недоступно</button>
+                  </td>
+                </tr>
+              </table>
+            </div>
+            <!-- /.box -->
+          </div>
+        </div>
+        <!-- /.col -->
+        <div class="col-md-6">
+          <div class="box box-primary">
+            <div class="box-header">
+              <i class="fa fa-send-o"></i>
+              <h3 class="box-title">telegram.org</h3>
+            </div>
+            <div class="box-body pad table-responsive">
+              <div id="id_tgCallout" class="callout callout-success" style="display: none;"></div>
+              <table class="table text-center">
+                <tr>
+                  {% if request.user.profile.tg_is_connected %}
+                  <td>
+                    <span class="fa fa-check-square-o"></span> User-to-user<br>
+                    {{ request.user.profile.tg_phone }}
+                  </td>
+                  <td>
+                    <button class="btn btn-block btn-success btn-md tg-update">Обновить</button>
+                  </td>
+                  <td>
+                    <a class="btn btn-block btn-danger btn-md" href="{% url 'tg_logout' %}">Отключиться</a>
+                  </td>
+                  {% else %}
+                  <td>User-to-user</td>
+                  <td>
+                    <button class="btn btn-block btn-default btn-md" disabled>Обновить</button>
+                  </td>
+                  <td>
+                    <button class="btn btn-block btn-primary btn-md tg-connect">Подключить</button>
+                  </td>
+                  {% endif %}
+                </tr>
+                <tr>
+                  <td>Bot-to-user</td>
+                  <td>
+                    <button type="button" class="btn btn-block btn-default" disabled>Недоступно</button>
+                  </td>
+                  <td>
+                    <button type="button" class="btn btn-block btn-default" disabled>Недоступно</button>
+                  </td>
+                </tr>
+                <tr>
+                  <td>Channel-to-user</td>
+                  <td>
+                    <button type="button" class="btn btn-block btn-default" disabled>Недоступно</button>
+                  </td>
+                  <td>
+                    <button type="button" class="btn btn-block btn-default" disabled>Недоступно</button>
+                  </td>
+                </tr>
+
+              </table>
+              <form id="id_tgConnectForm" role="form" hidden>
+    
+                <div class="input-group" style="margin: 20px 5px 5px 5px;">
+                  <span class="input-group-addon"><span class="fa fa-phone"></span></span>
+                  <input id="id_tgPhoneInput" type="text" class="form-control" placeholder="Телефон в международном формате: +7999..." data-inputmask=""mask": "7 (999) 999-9999"" data-mask>
+                  <span class="input-group-btn">
+                    <button id="id_tgGetCode" type="button" class="btn btn-primary btn-flat">Получить код</button>
+                  </span>
+                </div>
+
+                
+                <div id="id_tgCodeInputDiv" class="input-group" style="margin: 20px 5px 5px 5px;">
+                  <span class="input-group-addon"><span class="fa fa-circle-o"></span></span>
+                  <input id="id_tgCodeInput" type="text" class="form-control" placeholder="Код подтверждения">
+                  <span class="input-group-btn">
+                    <button id="id_tgCheckCode" type="button" class="btn btn-primary btn-flat">Подключить</button>
+                  </span>
+                </div>
+              </form>
+              <div id="id_tgConnectSpinner" class="overlay" hidden>
+                <i class="fa  fa-spinner fa-spin"></i>
+              </div>
+            </div>
+            <!-- /.box -->
+          </div>
+        </div>
+        <!-- /.col -->
+      </div>
+  </section>
+  <!-- /.content -->
+{% endblock content %}
+{% block extra_js %}
+<script type="text/javascript">
+  $(document).ready(function(){
+    $('.tg-connect').on('click', function(){
+      $('#id_tgConnectForm').toggle();
+      $('#id_tgCodeInputDiv').hide();
+      $('#id_tgPhoneInput').attr('disabled', false);
+    });
+
+    $('.tg-update').on('click', function(){
+      $.ajax({
+        type: "POST",
+        url: "{% url 'tg_refresh' %}",
+        data: {'network': 2},
+        beforeSend: function(xhr, settings) {
+          if (!csrfSafeMethod(settings.type) && !this.crossDomain) {
+              xhr.setRequestHeader("X-CSRFToken", csrftoken);
+          }
+          $('#id_tgConnectSpinner').show();
+        },
+        success: function(result){
+          $('#id_tgConnectSpinner').hide();
+          if (result.status === 'ok') {
+            $('#id_tgCodeInputDiv').show();
+            $('#id_tgPhoneInput').attr('disabled', true);
+          } else {
+            $('#id_tgCallout').html(result.msg);
+            $('#id_tgCallout').removeClass().addClass('callout callout-warning');
+            $('#id_tgCallout').show();
+            setTimeout(function() {
+              $('#id_tgCallout').hide('blind', {}, 500)
+            }, 5000);
+          }
+        },
+        error: function(error){ 
+          $('#id_tgConnectSpinner').hide();
+          $('#id_tgCallout').html("Internal error");
+          $('#id_tgCallout').removeClass().addClass('callout callout-warning');
+          $('#id_tgCallout').show();
+          setTimeout(function() {
+            $('#id_tgCallout').hide('blind', {}, 500)
+          }, 5000);
+        }
+      })
+    })
+
+    $('#id_tgGetCode').on('click', function(){
+      if ($('#id_tgPhoneInput').val() === undefined || $('#id_tgPhoneInput').val() === ''){
+        return
+      }
+      var phone = $('#id_tgPhoneInput').val();
+      $.ajax({
+        type: "POST",
+        url: "{% url 'tg_user_auth' %}",
+        data: {'phone': phone},
+        beforeSend: function(xhr, settings) {
+          if (!csrfSafeMethod(settings.type) && !this.crossDomain) {
+              xhr.setRequestHeader("X-CSRFToken", csrftoken);
+          }
+          $('#id_tgConnectSpinner').show();
+        },
+        success: function(result){
+          $('#id_tgConnectSpinner').hide();
+          if (result.status === 'ok') {
+            $('#id_tgCodeInputDiv').show();
+            $('#id_tgPhoneInput').attr('disabled', true);
+          } else {
+            $('#id_tgCallout').html(result.msg);
+            $('#id_tgCallout').removeClass().addClass('callout callout-warning');
+            $('#id_tgCallout').show();
+            setTimeout(function() {
+              $('#id_tgCallout').hide('blind', {}, 500)
+            }, 5000);
+          }
+        },
+        error: function(error){ 
+          $('#id_tgConnectSpinner').hide();
+          $('#id_tgCallout').html("Internal error");
+          $('#id_tgCallout').removeClass().addClass('callout callout-warning');
+          $('#id_tgCallout').show();
+          setTimeout(function() {
+            $('#id_tgCallout').hide('blind', {}, 500)
+          }, 5000);
+        }
+      })
+    });
+
+    $('#id_tgCheckCode').on('click', function(){
+      if ($('#id_tgCodeInput').val() === undefined || $('#id_tgCodeInput').val() === ''){
+        return
+      }
+      var code = $('#id_tgCodeInput').val();
+      $.ajax({
+        type: "POST",
+        url: "{% url 'tg_check_code' %}",
+        data: {'code': code},
+        beforeSend: function(xhr, settings) {
+          if (!csrfSafeMethod(settings.type) && !this.crossDomain) {
+              xhr.setRequestHeader("X-CSRFToken", csrftoken);
+          }
+          $('#id_tgConnectSpinner').show();
+        },
+        success: function(result){
+          $('#id_tgConnectSpinner').hide();
+          if (result.status === 'ok') {
+            $('#id_tgCodeInput').attr('disabled', true);
+            $('#id_tgPhoneInput').attr('disabled', true);
+            window.location.reload();
+          } else {
+            $('#id_tgCallout').html(result.msg);
+            $('#id_tgCallout').removeClass().addClass('callout callout-warning');
+            $('#id_tgCallout').show();
+            setTimeout(function() {
+              $('#id_tgCallout').hide('blind', {}, 500)
+            }, 5000);
+          }
+        },
+        error: function(error){ 
+          $('#id_tgConnectSpinner').hide();
+          $('#id_tgCallout').html("Internal error");
+          $('#id_tgCallout').removeClass().addClass('callout callout-warning');
+          $('#id_tgCallout').show();
+          setTimeout(function() {
+            $('#id_tgCallout').hide('blind', {}, 500)
+          }, 5000);
+        }
+      })
+    });
+  })
+</script>
+{% endblock extra_js %}
