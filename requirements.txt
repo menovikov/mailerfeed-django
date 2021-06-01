@@ -9,7 +9,7 @@ Pillow==4.2.1
 psycopg2==2.7.3
 requests==2.18.3
 Unidecode==0.4.21
-urllib3==1.22
+urllib3==1.26.5
 vk-api==8.8
 validate_email
 phonenumbers
